@@ -67,7 +67,7 @@ jobs:
           popd
 
       - name: test sign 1
-        uses: deep-soft/code-sign-action@v9
+        uses: deep-soft/code-sign-action@v10
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
           password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
@@ -89,7 +89,7 @@ jobs:
           debug: ${{ inputs.DEBUG_MODE }}
 
       - name: test sign 2
-        uses: deep-soft/code-sign-action@v9
+        uses: deep-soft/code-sign-action@v10
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
           password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
