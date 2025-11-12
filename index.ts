@@ -9,11 +9,11 @@ const asyncExec = util.promisify(exec);
 const certificateFileName = env['TEMP'] + '\\certificate.pfx';
 
 // #win2022 const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe';
-// #win2025, next after 10.0.17134.0 is 10.0.26100.0;
-// #const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x86/signtool.exe';
+// #win2025 const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x86/signtool.exe';
+// 10.0.26100.0 exists in both windows-2022 and windows-2025
 // or use function getSigntoolLocation
 //     const signtool = await getSigntoolLocation()
-const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17134.0/x86/signtool.exe';
+const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x86/signtool.exe';
 
 const signtoolFileExtensions = [
     '.dll', '.exe', '.sys', '.vxd',
