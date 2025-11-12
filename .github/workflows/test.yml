@@ -26,6 +26,16 @@ jobs:
           var_os=${{ matrix.job.os }};
           echo "var_os:["$var_os"]";
 
+      - name: sdk 10 ${{ matrix.job.os }}
+        shell: cmd
+        run: |
+          echo "bin folder"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\"
+          echo "bin\17763 folder (windows 2022)"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool.exe"
+          echo "bin\26100 folder (windows 2025)"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\signtool.exe"
+
       - name: test download
         shell: bash
         run: |
