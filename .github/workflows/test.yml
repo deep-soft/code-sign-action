@@ -20,6 +20,12 @@ jobs:
       - name: checkout
         uses: deep-soft/checkout@v4
 
+      - name: var ${{ matrix.job.os }}
+        shell: bash
+        run: |
+          var_os=${{ matrix.job.os }};
+          echo "var_os:[" $var_os "]";
+
       - name: test download
         shell: bash
         run: |
