@@ -74,7 +74,7 @@ jobs:
           popd
 
       - name: test sign 1 (windows-2022)
-        if: ${{ matrix.job.os == "windows-2022" }}
+        if: ${{ matrix.job.os == 'windows-2022' }}
         uses: deep-soft/code-sign-action@v10
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
@@ -85,7 +85,7 @@ jobs:
           recursive: true
 
       - name: test sign 1 (windows-2025)
-        if: ${{ matrix.job.os == "windows-2025" }}
+        if: ${{ matrix.job.os == 'windows-2025' }}
         uses: deep-soft/code-sign-action@v11
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
@@ -108,7 +108,7 @@ jobs:
           debug: ${{ inputs.DEBUG_MODE }}
 
       - name: test sign 2 (windows-2022)
-        if: ${{ matrix.job.os == "windows-2022" }}
+        if: ${{ matrix.job.os == 'windows-2022' }}
         uses: deep-soft/code-sign-action@v10
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
@@ -119,7 +119,7 @@ jobs:
           recursive: true
 
       - name: test sign 2 (windows-2025)
-        if: ${{ matrix.job.os == "windows-2025" }}
+        if: ${{ matrix.job.os == 'windows-2025' }}
         uses: deep-soft/code-sign-action@v11
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
