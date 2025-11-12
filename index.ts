@@ -8,7 +8,12 @@ import { env } from 'process';
 const asyncExec = util.promisify(exec);
 const certificateFileName = env['TEMP'] + '\\certificate.pfx';
 
-const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe';
+// #win2022 const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe';
+// #win2025, next after 10.0.17134.0 is 10.0.26100.0;
+// #const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x86/signtool.exe';
+// or use function getSigntoolLocation
+//     const signtool = await getSigntoolLocation()
+const signtool = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17134.0/x86/signtool.exe';
 
 const signtoolFileExtensions = [
     '.dll', '.exe', '.sys', '.vxd',
@@ -51,6 +56,35 @@ async function addCertificateToStore(){
         console.log(err);
         return false;
     }
+}
+
+async function getSigntoolLocation(): Promise<string> {
+    const windowsKitsfolder = 'C:/Program Files (x86)/Windows Kits/10/bin/';
+    const folders = await fs.readdir(windowsKitsfolder);
+    let fileName = 'unable to find signtool.exe';
+    let maxVersion = 0;
+    for (const folder of folders) {
+        if (!folder.endsWith('.0')) {
+            continue;
+        }
+        const folderVersion = parseInt(folder.replace(/\./g,''));
+        if (folderVersion > maxVersion) {
+            const signtoolFilename = `${windowsKitsfolder}${folder}/x64/signtool.exe`;
+            try {
+                const stat = await fs.stat(signtoolFilename);
+                if (stat.isFile()) {
+                    fileName = signtoolFilename
+                    maxVersion = folderVersion;
+                }
+            }
+            catch {
+            }
+        }
+    }
+
+    console.log(`Signtool location is ${fileName}.`);
+
+    return fileName;
 }
 
 async function signWithSigntool(fileName: string) {
