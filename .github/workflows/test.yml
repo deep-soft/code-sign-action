@@ -83,6 +83,28 @@ jobs:
           xz -d "${{ env.name_7z_full }}"
           popd
 
+# test with master - begin
+      - name: Use node 20
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: npm run lint
+
+      - run: npm run build
+
+      - name: Run the action with password
+        uses: ./
+        with:
+          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
+          folder: './tmp'
+          recursive: true
+# test with master - end
+
       - name: test sign 1 (windows-2022)
         if: ${{ matrix.job.os == 'windows-2022' }}
         uses: deep-soft/code-sign-action@v10
