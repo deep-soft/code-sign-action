@@ -8,13 +8,14 @@ on:
 
 jobs:
   test_download:
-    name: test_download-${{ matrix.job.cfg }}
+    name: test_download-${{ matrix.job.os }}
     runs-on: ${{ matrix.job.os }}
     strategy:
       fail-fast: false
       matrix:
         job:
-          - { cfg: win, os: windows-latest }
+          - { cfg: win, os: windows-2022 }
+          - { cfg: win, os: windows-2025 }
     steps:
       - name: checkout
         uses: deep-soft/checkout@v4
@@ -66,8 +67,20 @@ jobs:
           xz -d "${{ env.name_7z_full }}"
           popd
 
-      - name: test sign 1
+      - name: test sign 1 (windows-2022)
+        if: ${{ matrix.job.os }} == 'windows-2022'
         uses: deep-soft/code-sign-action@v10
+        with:
+          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
+          # certificatename: '${{ secrets.CERTNAME }}'
+          folder: './tmp'
+          recursive: true
+
+      - name: test sign 1 (windows-2025)
+        if: ${{ matrix.job.os }} == 'windows-2025'
+        uses: deep-soft/code-sign-action@v11
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
           password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
@@ -88,8 +101,20 @@ jobs:
           verbose: ${{ inputs.DEBUG_MODE }}
           debug: ${{ inputs.DEBUG_MODE }}
 
-      - name: test sign 2
+      - name: test sign 2 (windows-2022)
+        if: ${{ matrix.job.os }} == 'windows-2022'
         uses: deep-soft/code-sign-action@v10
+        with:
+          certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          certificatesha1: '${{ secrets.WINDOWS_PFX_SHA1_THUMBPRINT }}'
+          # certificatename: '${{ secrets.CERTNAME }}'
+          folder: './tmp'
+          recursive: true
+
+      - name: test sign 2 (windows-2025)
+        if: ${{ matrix.job.os }} == 'windows-2025'
+        uses: deep-soft/code-sign-action@v11
         with:
           certificate: '${{ secrets.WINDOWS_PFX_BASE64 }}'
           password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
@@ -116,7 +141,7 @@ jobs:
         with:
           fail_on_unmatched_files: false
           draft: true
-          tag_name: test_archives
+          tag_name: test_archives-${{ matrix.job.os }}
           files: |
             ${{ env.zip_1 }}
             ${{ env.zip_2 }}
