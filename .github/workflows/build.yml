@@ -36,17 +36,36 @@ jobs:
 #      - run: npm i --save-dev @types/node
 
       - name: npm ci
-        run: npm ci
+        run: |
+          npm ci
 
       - name: npm audit fix 1
         continue-on-error: true
-        run: npm audit fix
+        run: |
+          npm audit fix
+
+      - name: npm delete package-lock.json
+        continue-on-error: true
+        run: |
+          rm package-lock.json
+
+      - name: npm delete node_modules
+        continue-on-error: true
+        run: |
+          rm -r node_modules
+
+      - name: npm ci
+        run: |
+          npm ci
 
       - name: npm audit fix 2
         continue-on-error: true
-        run: npm audit fix
+        run: |
+          npm audit fix
 
-      - run: npm run build
+      - name: npm run build
+        run: |
+          npm run build
 
       - name: Create archive dist
         continue-on-error: true
