@@ -84,10 +84,10 @@ jobs:
           popd
 
 # test with master - begin
-      - name: Setup node 20
+      - name: Setup node 24
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
 
 #      - run: npm install
 #      - run: npm i --save-dev @types/node
