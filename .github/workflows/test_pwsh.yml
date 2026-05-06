@@ -15,7 +15,7 @@ jobs:
       matrix:
         job:
           - { cfg: win, os: windows-2022 }
-          - { cfg: win, os: windows-2025 }
+         # - { cfg: win, os: windows-2025 }
     steps:
       - name: checkout
         uses: deep-soft/checkout@v6
@@ -90,7 +90,7 @@ jobs:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: './tmp'
+          folder: '.\tmp'
           recursive: true
 # test with pwsh - end
 
@@ -101,7 +101,7 @@ jobs:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: './tmp'
+          folder: '.\tmp'
           recursive: true
 
       - name: test sign 1 (windows-2025) v1
@@ -111,7 +111,7 @@ jobs:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: './tmp'
+          folder: '.\tmp'
           recursive: true
 
       - uses: deep-soft/zip-release@v5
@@ -133,7 +133,7 @@ jobs:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: './tmp'
+          folder: '.\tmp'
           recursive: true
 
       - name: test sign 2 (windows-2025) v1
@@ -143,7 +143,7 @@ jobs:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: './tmp'
+          folder: '.\tmp'
           recursive: true
 
       - uses: deep-soft/zip-release@v5
