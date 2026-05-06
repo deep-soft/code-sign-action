@@ -1,0 +1,180 @@
+name: test download and sign (pwsh)
+on:
+  workflow_dispatch:
+    inputs:
+      DEBUG_MODE:
+        description: DEBUG_MODE
+        default: 'no'
+
+jobs:
+  test_download:
+    name: test_download-${{ matrix.job.os }}
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - { cfg: win, os: windows-2022 }
+          - { cfg: win, os: windows-2025 }
+    steps:
+      - name: checkout
+        uses: deep-soft/checkout@v6
+
+      - name: var ${{ matrix.job.os }}
+        shell: bash
+        run: |
+          var_os=${{ matrix.job.os }};
+          echo "var_os:["$var_os"]";
+
+      - name: sdk 10 ${{ matrix.job.os }}
+        shell: cmd
+        run: |
+          echo "bin folder"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\"
+          echo "bin\17763 folder (windows 2022)"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool.exe"
+          echo "bin\26100 folder (windows 2025)"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\signtool.exe"
+
+      - name: test download
+        shell: bash
+        run: |
+          name_common=$(cat bin/bin-common.txt);
+          name_7z=$(cat bin/bin-${{ matrix.job.cfg }}.txt);
+          echo $name_common;
+          echo $name_7z;
+          #curl refs/tags/bins/$name_7z -o $name_7z;
+          mkdir tmp
+          pushd tmp
+          echo "curl -LOJ $name_common$name_7z;"
+          curl -LOJ $name_common$name_7z;
+          # name_7z_full=$(find . -type f -name $name_7z -print0 | xargs -0 realpath)
+          name_7z_full=$(find . -name "$name_7z" | xargs readlink -f)
+          echo "name_7z_full=$name_7z_full" >> $GITHUB_ENV
+          echo "list: pushd"
+          ls -l
+          popd
+          echo "list: popd"
+          ls -l
+      
+      - name: test archive
+        shell: bash
+        run: |
+          pushd tmp
+          echo "name_7z_full: ${{ env.name_7z_full }}"
+          file "${{ env.name_7z_full }}"
+          xz -vt "${{ env.name_7z_full }}"
+          # if [ "${{ matrix.job.cfg }}" == "win" ]; then
+          #   xz -9 ${{ env.name_7z_full }}
+          #   name_xz_full=$(find . -name "*.xz" | xargs readlink -f)
+          #   ls -l $name_xz_full
+          #   echo "name_xz_full=$name_xz_full" >> $GITHUB_ENV            
+          # else
+          #   xz -vt "${{ env.name_7z_full }}"
+          # fi
+          popd
+
+      - name: unpack archive
+        shell: bash
+        run: |
+          pushd tmp
+          echo "name_7z_full: ${{ env.name_7z_full }}"
+          file "${{ env.name_7z_full }}"
+          xz -d "${{ env.name_7z_full }}"
+          popd
+
+# test with pwsh - begin
+      - name: Run the action with password
+        uses: deep-soft/code-sign-action-pwsh@main
+        with:
+          cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          hash:          'SHA256'
+          folder: './tmp'
+          recursive: true
+# test with pwsh - end
+
+      - name: test sign 1 (windows-2022) v1
+        if: ${{ matrix.job.os == 'windows-2022' }}
+        uses: deep-soft/code-sign-action-pwsh@v1
+        with:
+          cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          hash:          'SHA256'
+          folder: './tmp'
+          recursive: true
+
+      - name: test sign 1 (windows-2025) v1
+        if: ${{ matrix.job.os == 'windows-2025' }}
+        uses: deep-soft/code-sign-action-pwsh@v1
+        with:
+          cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          hash:          'SHA256'
+          folder: './tmp'
+          recursive: true
+
+      - uses: deep-soft/zip-release@v5
+        with:
+          type: zip
+          filename: 'test-1'
+          directory: './tmp'
+          path: '.'
+          env_variable: 'zip_1'
+          #inclusions: 'a'
+          #exclusions: 'someotherfile*'
+          verbose: ${{ inputs.DEBUG_MODE }}
+          debug: ${{ inputs.DEBUG_MODE }}
+
+      - name: test sign 2 (windows-2022) v1
+        if: ${{ matrix.job.os == 'windows-2022' }}
+        uses: deep-soft/code-sign-action-pwsh@v1
+        with:
+          cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          hash:          'SHA256'
+          folder: './tmp'
+          recursive: true
+
+      - name: test sign 2 (windows-2025) v1
+        if: ${{ matrix.job.os == 'windows-2025' }}
+        uses: deep-soft/code-sign-action-pwsh@v1
+        with:
+          cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
+          cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
+          hash:          'SHA256'
+          folder: './tmp'
+          recursive: true
+
+      - uses: deep-soft/zip-release@v5
+        with:
+          type: zip
+          filename: 'test-2'
+          directory: './tmp'
+          path: '.'
+          env_variable: 'zip_2'
+          #inclusions: 'a'
+          #exclusions: 'someotherfile*'
+          verbose: ${{ inputs.DEBUG_MODE }}
+          debug: ${{ inputs.DEBUG_MODE }}
+
+      - name: Publish archives
+        continue-on-error: true
+        uses: deep-soft/action-gh-release@v3
+        with:
+          fail_on_unmatched_files: false
+          draft: true
+          tag_name: test_archives-${{ matrix.job.os }}
+          files: |
+            ${{ env.zip_1 }}
+            ${{ env.zip_2 }}
+            ./tmp/*
+
+#      - name: Upload Artifact
+#        if: ${{ matrix.job.cfg == 'win' }}
+#        uses: deep-soft/upload-artifact@v3
+#        with:
+#          name: xz
+#          path: |
+#            ${{ env.name_xz_full }}
+#            tmp
