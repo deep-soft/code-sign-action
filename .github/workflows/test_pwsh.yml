@@ -81,6 +81,7 @@ jobs:
           echo "name_7z_full: ${{ env.name_7z_full }}"
           file "${{ env.name_7z_full }}"
           xz -d "${{ env.name_7z_full }}"
+          ls -laR
           popd
 
 # test with pwsh - begin
