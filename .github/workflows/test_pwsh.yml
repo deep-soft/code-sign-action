@@ -87,13 +87,13 @@ jobs:
 # test with pwsh - begin
       - name: Run the action with password
         uses: deep-soft/code-sign-action-pwsh@main
+#          folder: '.\tmp'
         with:
           cert_base64:   '${{ secrets.WINDOWS_PFX_BASE64 }}'
           cert_password: '${{ secrets.WINDOWS_PFX_PASSWORD }}'
           hash:          'SHA256'
-          folder: '.\tmp'
           recursive: true
-          sign_globs: 'tmp/*.exe,tmp/*.dll'
+          sign_globs: 'tmp/*.exe,tmp/*.dll,tmp/*.sys'
 # test with pwsh - end
 
       - name: test sign 1 (windows-2022) v1
