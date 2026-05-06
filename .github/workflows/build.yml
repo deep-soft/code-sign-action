@@ -59,6 +59,10 @@ jobs:
         run: |
           npm install
 
+      - name: npm i --save-dev @types/node
+        run: |
+          npm i --save-dev @types/node
+
       - name: npm ci
         run: |
           npm ci
