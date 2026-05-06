@@ -54,6 +54,10 @@ jobs:
         run: |
           rm -r node_modules
 
+      - name: npm install
+        run: |
+          npm install
+
       - name: npm ci
         run: |
           npm ci
