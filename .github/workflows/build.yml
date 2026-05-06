@@ -25,7 +25,7 @@ jobs:
         operating-system: [windows-latest]
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup node 24
         uses: actions/setup-node@v4
@@ -47,7 +47,8 @@ jobs:
       - name: npm delete package-lock.json
         continue-on-error: true
         run: |
-          rm package-lock.json
+          ls package-lock.json;
+          rm package-lock.json;
 
       - name: npm delete node_modules
         continue-on-error: true
@@ -65,7 +66,7 @@ jobs:
       - name: npm audit fix 2
         continue-on-error: true
         run: |
-          npm audit fix
+          npm audit fix --force
 
       - name: npm run build
         run: |
@@ -93,7 +94,7 @@ jobs:
 
       - name: Publish artifact
         continue-on-error: true
-        uses: deep-soft/action-gh-release@v2.1
+        uses: deep-soft/action-gh-release@v3
         with:
           draft: true
           tag_name: npm-build-dist
@@ -103,7 +104,7 @@ jobs:
       - name: Create archive - ALL
         if: ${{ inputs.archive_ALL }}
         continue-on-error: true
-        uses: deep-soft/zip-release@v2
+        uses: deep-soft/zip-release@v5
         with:
           type: 'zip'
           filename: "npm-build-ALL-${{ matrix.operating-system }}"
@@ -117,7 +118,7 @@ jobs:
       - name: Publish artifact - ALL
         if: ${{ inputs.archive_ALL }}
         continue-on-error: true
-        uses: deep-soft/action-gh-release@v2.1
+        uses: deep-soft/action-gh-release@v3
         with:
           draft: true
           tag_name: npm-build-ALL
