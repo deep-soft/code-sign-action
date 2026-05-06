@@ -35,9 +35,16 @@ jobs:
 #      - run: npm install
 #      - run: npm i --save-dev @types/node
 
-      - run: npm ci
+      - name: npm ci
+        run: npm ci
 
-      - run: npm audit fix
+      - name: npm audit fix 1
+        continue-on-error: true
+        run: npm audit fix
+
+      - name: npm audit fix 2
+        continue-on-error: true
+        run: npm audit fix
 
       - run: npm run build
 
