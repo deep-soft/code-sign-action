@@ -32,8 +32,8 @@ jobs:
         with:
           node-version: 24.x
 
-      - run: npm install
-      - run: npm i --save-dev @types/node
+#      - run: npm install
+#      - run: npm i --save-dev @types/node
 
       - name: npm ci
         run: |
@@ -44,33 +44,33 @@ jobs:
         run: |
           npm audit fix
 
-      - name: npm delete package-lock.json
-        continue-on-error: true
-        run: |
-          ls package-lock.json;
-          rm package-lock.json;
+#      - name: npm delete package-lock.json
+#        continue-on-error: true
+#        run: |
+#          ls package-lock.json;
+#          rm package-lock.json;
 
-      - name: npm delete node_modules
-        continue-on-error: true
-        run: |
-          rm -r node_modules
+#      - name: npm delete node_modules
+#        continue-on-error: true
+#        run: |
+#          rm -r node_modules
 
-      - name: npm install
-        run: |
-          npm install
+#      - name: npm install
+#        run: |
+#          npm install
 
-      - name: npm i --save-dev @types/node
-        run: |
-          npm i --save-dev @types/node
+#      - name: npm i --save-dev @types/node
+#        run: |
+#          npm i --save-dev @types/node
 
-      - name: npm ci
-        run: |
-          npm ci
+#      - name: npm ci
+#        run: |
+#          npm ci
 
-      - name: npm audit fix 2
-        continue-on-error: true
-        run: |
-          npm audit fix --force
+#      - name: npm audit fix 2
+#        continue-on-error: true
+#        run: |
+#          npm audit fix --force
 
       - name: npm run build
         continue-on-error: true
