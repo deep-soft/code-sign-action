@@ -93,6 +93,7 @@ jobs:
           hash:          'SHA256'
           folder: '.\tmp'
           recursive: true
+          sign_globs: 'tmp/*.exe,tmp/*.dll'
 # test with pwsh - end
 
       - name: test sign 1 (windows-2022) v1
